@@ -5,6 +5,7 @@ import updateVoiceSettings, {
   voiceConverter,
 } from "@/component/voice/voiceConverter";
 import { startRecognition } from "@/component/text/textConverter";
+import VoiceWaves from "@/component/VoiceWaves/VoiceWaves";
 
 export default function Home() {
   const [text, setText] = useState("");
@@ -41,10 +42,13 @@ export default function Home() {
 
   return (
     <div
-      className="w-screen h-screen flex items-center justify-center bg-[#111] bg-[url('https://static.tumblr.com/maopbtg/a5emgtoju/inflicted.png')]
+      className="w-screen h-screen flex items-center justify-center bg-[#111] bg-[url('https://static.tumblr.com/maopbtg/a5emgtoju/inflicted.png')] bg-center
     "
     >
       <div className="flex flex-col items-center justify-center gap-5">
+        <div className="flex items-center justify-center mb-10">
+          {speaking && <VoiceWaves />}
+        </div>
         <h1 className="text-3xl font-extrabold mb-6 text-white tracking-wide">
           Voice Recorder
         </h1>
@@ -57,11 +61,11 @@ export default function Home() {
           value={text}
           onChange={(e) => setText(e.target.value)}
           rows={4}
-          className="w-[500px] h-full overflow-hidden bg-white text-gray-900 font-mono text-xl leading-[40px] resize-none px-[100px] pt-[45px] pb-[34px] rounded-xl shadow-lg border-t border-white/30 border-b border-white/30 bg-[url('https://static.tumblr.com/maopbtg/E9Bmgtoht/lines.png'),url('https://static.tumblr.com/maopbtg/nBUmgtogx/paper.png')] bg-repeat-y bg-repeat"
+          className="w-full max-w-md h-full overflow-hidden bg-white text-gray-900 font-mono text-lg sm:text-xl leading-[30px] sm:leading-[40px] resize-none px-6 sm:px-[100px] pt-[30px] sm:pt-[45px] pb-[24px] sm:pb-[34px] rounded-xl shadow-lg border-t border-white/30 border-b border-white/30 bg-[url('https://static.tumblr.com/maopbtg/E9Bmgtoht/lines.png'),url('https://static.tumblr.com/maopbtg/nBUmgtogx/paper.png')] bg-repeat-y bg-repeat"
         />
 
         {/* Controls */}
-        <div className="flex flex-col gap-6 mt-8 w-[500px] bg-black/25 p-8 rounded-2xl shadow-2xl border border-gray-800 font-sans">
+        <div className="flex flex-col gap-6 mt-8 w-full max-w-md bg-black/25 p-6 sm:p-8 rounded-2xl shadow-2xl border border-gray-800 font-sans">
           {/* Language */}
           <div className="flex flex-col gap-3">
             <label className="text-sm font-semibold mb-3 text-gray-200 uppercase tracking-wide">
@@ -71,12 +75,16 @@ export default function Home() {
               value={lang}
               onChange={(e) => {
                 setLang(e.target.value);
-                updateVoiceSettings(text, {
-                  lang: e.target.value,
-                  pitch,
-                  rate,
-                  volume,
-                });
+                updateVoiceSettings(
+                  text,
+                  {
+                    lang: e.target.value,
+                    pitch,
+                    rate,
+                    volume,
+                  },
+                  (speaking) => setSpeaking(speaking)
+                );
               }}
               className="p-3 rounded-lg px-4 border border-gray-600 bg-gray-900 text-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 font-sans"
             >
@@ -140,12 +148,16 @@ export default function Home() {
               value={pitch}
               onChange={(e) => {
                 setPitch(Number(e.target.value));
-                updateVoiceSettings(text, {
-                  lang,
-                  pitch: Number(e.target.value),
-                  rate,
-                  volume,
-                });
+                updateVoiceSettings(
+                  text,
+                  {
+                    lang,
+                    pitch: Number(e.target.value),
+                    rate,
+                    volume,
+                  },
+                  (speaking) => setSpeaking(speaking)
+                );
               }}
               className="accent-blue-500 px-2"
             />
@@ -164,12 +176,16 @@ export default function Home() {
               value={rate}
               onChange={(e) => {
                 setRate(Number(e.target.value));
-                updateVoiceSettings(text, {
-                  lang,
-                  pitch,
-                  rate: Number(e.target.value),
-                  volume,
-                });
+                updateVoiceSettings(
+                  text,
+                  {
+                    lang,
+                    pitch,
+                    rate: Number(e.target.value),
+                    volume,
+                  },
+                  (speaking) => setSpeaking(speaking)
+                );
               }}
               className="accent-green-500 px-2"
             />
@@ -188,12 +204,16 @@ export default function Home() {
               value={volume}
               onChange={(e) => {
                 setVolume(Number(e.target.value));
-                updateVoiceSettings(text, {
-                  lang,
-                  pitch,
-                  rate,
-                  volume: Number(e.target.value),
-                });
+                updateVoiceSettings(
+                  text,
+                  {
+                    lang,
+                    pitch,
+                    rate,
+                    volume: Number(e.target.value),
+                  },
+                  (speaking) => setSpeaking(speaking)
+                );
               }}
               className="accent-red-500 px-2"
             />
@@ -201,10 +221,10 @@ export default function Home() {
         </div>
 
         {/* Buttons */}
-        <div className="flex flex-row items-center justify-center gap-10 mt-10">
+        <div className="flex flex-row items-center justify-center gap-6 sm:gap-10 mt-10 flex-wrap">
           {/* Start */}
           <button
-            className="flex items-center justify-center w-16 h-16 bg-green-600 text-white rounded-full shadow-md hover:bg-green-700 active:scale-95 transition-all"
+            className="flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-green-600 text-white rounded-full shadow-md hover:bg-green-700 active:scale-95 transition-all"
             onClick={handleStart}
           >
             <Mic className="w-5 h-5" />
@@ -212,7 +232,7 @@ export default function Home() {
 
           {/* Stop */}
           <button
-            className="flex items-center justify-center w-16 h-16 bg-red-600 text-white rounded-full shadow-md hover:bg-red-700 active:scale-95 transition-all"
+            className="flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-red-600 text-white rounded-full shadow-md hover:bg-red-700 active:scale-95 transition-all"
             onClick={handleStop}
           >
             <Square className="w-6 h-6" />
@@ -220,14 +240,14 @@ export default function Home() {
 
           {/* Read */}
           <button
-            className="flex items-center justify-center w-16 h-16 bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-700 active:scale-95 transition-all"
+            className="flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-blue-600 text-white rounded-full shadow-md hover:bg-blue-700 active:scale-95 transition-all"
             onClick={handleSpeak}
           >
             <Volume2 className="w-6 h-6" />
           </button>
         </div>
 
-        <div className="flex items-center gap-2 mt-4">
+        {/* <div className="flex items-center gap-2 mt-4">
           <div
             className={`w-4 h-4 rounded-full ${
               speaking ? "bg-green-500 animate-pulse" : "bg-gray-600"
@@ -236,7 +256,7 @@ export default function Home() {
           <span className="text-gray-200">
             {speaking ? "Speaking..." : "Idle"}
           </span>
-        </div>
+        </div> */}
       </div>
     </div>
   );
